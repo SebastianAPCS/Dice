@@ -4,47 +4,60 @@ Created by Sebastian Dowell in  October 2023 for Mr. Chan's APCSA class.
 
 */
 
-Die die1;
+ArrayList<Die> dice; // NullPointerException, needs initialization (will cause code to fail otherwise)
+
+Die die1 = new Die(-200, 0, 0, 50, 2.0, 255, 0, 0);
+Die die2 = new Die(0, 0, 0, 50, 2.0, 255, 0, 0);
+Die die3 = new Die(200, 0, 0, 50, 2.0, 255, 0, 0);
+Die die4 = new Die(-200, 200, 0, 50, 2.0, 255, 0, 0);
+Die die5 = new Die(0, 200, 0, 50, 2.0, 255, 0, 0);
+Die die6 = new Die(200, 200, 0, 50, 2.0, 255, 0, 0);
+Die die7 = new Die(-200, -200, 0, 50, 2.0, 255, 0, 0);
+Die die8 = new Die(0, -200, 0, 50, 2.0, 255, 0, 0);
+Die die9 = new Die(200, -200, 0, 50, 2.0, 255, 0, 0);
 
 void setup() {
     size(800, 600);
+    dice.add(new Die(-200, 0, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(0, 0, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(200, 0, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(-200, 200, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(0, 200, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(200, 200, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(-200, -200, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(0, -200, 0, 50, 2.0, 255, 0, 0));
+    dice.add(new Die(200, -200, 0, 50, 2.0, 255, 0, 0));
 }
 
 void draw() {
     background(0);
+    
+    System.out.println(dice);
 
-    if (die1 == null) {
-        die1 = new Die(0, 0, 0, 100, 2.0, 255, 0, 0);
-        die1.updateTransform();
-    }
-
+    die1.updateTransform();
+    die2.updateTransform();
+    
     // Update rotation angles continuously
-    die1.angles[0] += 1; // Adjust the rotation speed as needed
+    die1.angles[0] += 1;
     die1.angles[1] += 1;
+    
+    die2.angles[0] += 1;
+    die2.angles[1] -= 1;
 
     die1.show();
-
-    ArrayList<Quadrilateral> quads = die1.initializeDie(die1.x, die1.y, die1.z, die1.p);
-    for (Quadrilateral quad : quads) {
-        System.out.println("Vertices of Quadrilateral:");
-        System.out.println("v1: (" + quad.v1.x + ", " + quad.v1.y + ", " + quad.v1.z + ")");
-        System.out.println("v2: (" + quad.v2.x + ", " + quad.v2.y + ", " + quad.v2.z + ")");
-        System.out.println("v3: (" + quad.v3.x + ", " + quad.v3.y + ", " + quad.v3.z + ")");
-        System.out.println("v4: (" + quad.v4.x + ", " + quad.v4.y + ", " + quad.v4.z + ")");
-    }
-
-    // Continuously redraw
-    redraw();
+    die2.show();
 }
 
 void mousePressed() {
-    redraw();
+    // Placeholder
 }
 
 class Die {
     // Die coordinates
-    int x;
-    int y;
+    int xdiff;
+    int ydiff;
+    int x = 0;
+    int y = 0;
     int z;
     
     // Apothem of square
@@ -65,9 +78,9 @@ class Die {
     int gc;
     int bc;
   
-    Die(int x, int y, int z, double p, float w, int rc, int gc, int bc) {
-        this.x = x;
-        this.y = y;
+    Die(int xdiff, int ydiff, int z, double p, float w, int rc, int gc, int bc) {
+        this.xdiff = xdiff;
+        this.ydiff = ydiff;
         this.z = z;
         this.p = p;
         this.w = w;
@@ -88,8 +101,10 @@ class Die {
         
         updateTransform();
         
-        System.out.println("D:" + d);
+        pushMatrix();
+        translate((width / 2) + xdiff, (height / 2) + ydiff);
         renderQuadrilateral(d, w, rc, gc, bc);
+        popMatrix();
     }
   
     void updateTransform() {
@@ -130,15 +145,15 @@ class Die {
         q.add(new Quadrilateral(r3, r4, r8, r7));
         q.add(new Quadrilateral(r1, r4, r8, r5));
         
-        System.out.println("Q:" + q);
+        //System.out.println("Q:" + q);
         return q;
     }
     
     void renderQuadrilateral(ArrayList<Quadrilateral> quads, float w, int rc, int gc, int bc) {
-        System.out.println("Quads:" + quads);
+        //System.out.println("Quads:" + quads);
         for (Quadrilateral quad : quads) {
             // v1, v2, v3, v4, and c must be defined
-            System.out.println("Quad: " + quad);
+            //System.out.println("Quad: " + quad);
     
             Vertex v1 = transform.transform(quad.v1);
             Vertex v2 = transform.transform(quad.v2);
