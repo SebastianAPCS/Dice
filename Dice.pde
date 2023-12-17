@@ -4,8 +4,6 @@ Created by Sebastian Dowell in  October 2023 for Mr. Chan's APCSA class.
 
 */
 
-ArrayList<Die> dice = new ArrayList(); // NullPointerException, needs initialization (will cause code to fail otherwise)
-
 Die die1 = new Die(-200, 0, 0, 50, 2.0, 255, 0, 0);
 Die die2 = new Die(0, 0, 0, 50, 2.0, 255, 0, 0);
 Die die3 = new Die(200, 0, 0, 50, 2.0, 255, 0, 0);
