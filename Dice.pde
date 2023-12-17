@@ -4,7 +4,7 @@ Created by Sebastian Dowell in  October 2023 for Mr. Chan's APCSA class.
 
 */
 
-ArrayList<Die> dice; // NullPointerException, needs initialization (will cause code to fail otherwise)
+ArrayList<Die> dice = new ArrayList(); // NullPointerException, needs initialization (will cause code to fail otherwise)
 
 Die die1 = new Die(-200, 0, 0, 50, 2.0, 255, 0, 0);
 Die die2 = new Die(0, 0, 0, 50, 2.0, 255, 0, 0);
@@ -16,40 +16,74 @@ Die die7 = new Die(-200, -200, 0, 50, 2.0, 255, 0, 0);
 Die die8 = new Die(0, -200, 0, 50, 2.0, 255, 0, 0);
 Die die9 = new Die(200, -200, 0, 50, 2.0, 255, 0, 0);
 
+Die[] diceArray = {die1, die2, die3, die4, die5, die6, die7, die8, die9};
+
+double speed = 6;
+
 void setup() {
     size(800, 600);
-    dice.add(new Die(-200, 0, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(0, 0, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(200, 0, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(-200, 200, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(0, 200, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(200, 200, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(-200, -200, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(0, -200, 0, 50, 2.0, 255, 0, 0));
-    dice.add(new Die(200, -200, 0, 50, 2.0, 255, 0, 0));
+    fill(255, 0, 0);
+    
+    for (Die die : diceArray) {
+        die.roll();
+    }
 }
 
 void draw() {
     background(0);
-    
-    System.out.println(dice);
 
-    die1.updateTransform();
-    die2.updateTransform();
-    
-    // Update rotation angles continuously
-    die1.angles[0] += 1;
-    die1.angles[1] += 1;
-    
-    die2.angles[0] += 1;
-    die2.angles[1] -= 1;
+    if (speed > 0 && die1.angles[0] < 360) {
+        background(0);
 
-    die1.show();
-    die2.show();
+        for (Die die : diceArray) {
+            die.updateTransform();
+            die.angles[0] += speed;
+            die.angles[1] += speed;
+            die.show();
+        }
+
+        if (speed < 0.5) {
+            speed = 0.5;
+        } else {
+            speed -= 0.05;
+        }
+    } else {
+        speed = 0;
+        background(0);
+
+        Die[] diceArray = {die1, die2, die3, die4, die5, die6, die7, die8, die9};
+
+        for (Die die : diceArray) {
+            die.angles[0] = 0;
+            die.angles[1] = 0;
+            die.show();
+            die.renderFace(0, 0, 70, 0.4);
+        }
+        
+        displayTotal();
+    }
 }
 
+
 void mousePressed() {
-    // Placeholder
+    for (Die die : diceArray) {
+        die.roll();
+    }
+    die1.angles[0] = 0;
+    speed = 6;
+}
+
+void displayTotal() {
+    int total = die1.getNum() + die2.getNum() + die3.getNum()
+              + die4.getNum() + die5.getNum() + die6.getNum()
+              + die7.getNum() + die8.getNum() + die9.getNum();
+    
+    textSize(70);
+    
+    pushMatrix();
+    translate(width/2, height/2);
+    text("Total: " + total, -130, -75);
+    popMatrix();
 }
 
 class Die {
@@ -94,6 +128,10 @@ class Die {
     
     void roll() {
         num = (int) (Math.random() * 6 + 1);
+    }
+    
+    int getNum() {
+      return num;
     }
     
     void show() {
@@ -169,6 +207,49 @@ class Die {
             line((float) v4.x, (float) v4.y, (float) v1.x, (float) v1.y);
         }  
     }
+    
+    void renderFace(int centerX, int centerY, int w, float s) {
+        pushMatrix();
+        translate((width / 2) + xdiff, (height / 2) + ydiff);
+        
+        switch(num) {
+            case 1:
+                circle(centerX, centerY, w/5);
+                break;
+            case 2:
+                circle(centerX - (w * s), centerY - (w * s), w/5);
+                circle(centerX + (w * s), centerY + (w * s), w/5);
+                break;
+            case 3:
+                circle(centerX - (w * s), centerY - (w * s), w/5);
+                circle(centerX, centerY, w/5);
+                circle(centerX + (w * s), centerY + (w * s), w/5);
+                break;
+            case 4:
+                circle(centerX - (w * s), centerY - (w * s), w/5);
+                circle(centerX + (w * s), centerY + (w * s), w/5);
+                circle(centerX - (w * s), centerY + (w * s), w/5);
+                circle(centerX + (w * s), centerY - (w * s), w/5);
+                break;
+            case 5:
+                circle(centerX - (w * s), centerY - (w * s), w/5);
+                circle(centerX + (w * s), centerY + (w * s), w/5);
+                circle(centerX - (w * s), centerY + (w * s), w/5);
+                circle(centerX + (w * s), centerY - (w * s), w/5);
+                circle(centerX, centerY, w/5);
+                break;
+            case 6:
+                circle(centerX - (w * s), centerY - (w * s), w/5);
+                circle(centerX + (w * s), centerY + (w * s), w/5);
+                circle(centerX - (w * s), centerY + (w * s), w/5);
+                circle(centerX + (w * s), centerY - (w * s), w/5);
+                circle(centerX - (w * s), centerY, w/5);
+                circle(centerX + (w * s), centerY, w/5);
+                break;
+        }
+        
+        popMatrix();
+    }
 }
 
 class Vertex {
@@ -199,9 +280,11 @@ class Quadrilateral {
 
 class Matrix3 {
     double[] values;
+    
     Matrix3(double[] values) {
         this.values = values;
     }
+    
     Matrix3 multiply(Matrix3 other) {
         double[] result = new double[9];
         for (int row = 0; row < 3; row++) {
@@ -214,6 +297,7 @@ class Matrix3 {
         }
         return new Matrix3(result);
     }
+    
     Vertex transform(Vertex vinput) {
         return new Vertex(
             vinput.x * values[0] + vinput.y * values[3] + vinput.z * values[6],
